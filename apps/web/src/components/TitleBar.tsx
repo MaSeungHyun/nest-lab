@@ -14,11 +14,41 @@ export default function TitleBar() {
     window.ipcRenderer.send("window-close");
   };
 
+  const handleClickBack = () => {
+    history.back();
+  };
+
+  const handleClickForward = () => {
+    history.forward();
+  };
+
   return (
     <div
-      className="fixed top-0 left-0 right-0 h-8 bg-zinc-900 flex items-center justify-between select-none z-50"
       style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
+      className="fixed top-0 left-0 right-0 h-8 bg-zinc-900 flex items-center justify-between select-none z-50"
     >
+      <div
+        style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
+        className="flex items-center gap-4 px-2 md:px-2 lg:px-2"
+      >
+        <div className="group hover:cursor-pointer" onClick={handleClickBack}>
+          <Icon
+            icon="ArrowLeft"
+            size={16}
+            className="text-gray-300 group-hover:stroke-white"
+          />
+        </div>
+        <div
+          className="hover:cursor-pointer group"
+          onClick={handleClickForward}
+        >
+          <Icon
+            icon="ArrowRight"
+            size={16}
+            className="text-gray-300  group-hover:stroke-white"
+          />
+        </div>
+      </div>
       {/* 앱 타이틀 */}
       <div className="flex items-center gap-2 px-4">
         <span className="text-sm text-gray-300 font-semibold">
