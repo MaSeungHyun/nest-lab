@@ -1,11 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
-import { login } from "../api/auth";
+import { signin } from "../api/auth";
 
-export default function useLoginMutation() {
+export default function useSignInMutation() {
   const { mutate, ...rest } = useMutation({
     mutationFn: ({ id, password }: { id: string; password: string }) =>
-      login(id, password),
+      signin(id, password),
   });
 
-  return { loginMutation: mutate, ...rest };
+  return { signInMutation: mutate, ...rest };
 }

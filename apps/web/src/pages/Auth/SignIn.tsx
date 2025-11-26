@@ -1,21 +1,23 @@
-import React, { useCallback, useEffect, useState } from "react";
-import Input from "../components/Input";
-import { Button } from "../components/Button";
-import useLoginMutation from "../hooks/useLoginMutation";
-import { cn } from "../utils/style";
-import logo from "../assets/logo.png";
-import Icon from "../components/Icon";
-import { useNavigate } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import Input from "../../components/Input";
 
-function Login() {
+import { cn } from "../../utils/style";
+import logo from "../../assets/logo.png";
+import Icon from "../../components/Icon";
+import { useNavigate } from "react-router-dom";
+import { Button } from "../../components/Button";
+import useSignInMutation from "../../hooks/useSignInMutation";
+
+export default function SignIn() {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     id: "",
     password: "",
   });
   const [visible, setVisible] = useState(false);
   const [error, setError] = useState("");
-  const { loginMutation, isPending } = useLoginMutation();
-  const navigate = useNavigate();
+  const { signInMutation, isPending } = useSignInMutation();
 
   const handleLogin = useCallback(() => {
     setError("");
@@ -23,7 +25,7 @@ function Login() {
       setError("아이디와 비밀번호를 입력해주세요.");
       return;
     }
-    loginMutation(
+    signInMutation(
       { id: form.id, password: form.password },
       {
         onError: (error) => {
@@ -40,11 +42,15 @@ function Login() {
         },
       }
     );
-  }, [form, loginMutation, navigate]);
+  }, [form, signInMutation, navigate]);
 
   const handleChangeFormData = (key: string, value: string) => {
     setError("");
     setForm({ ...form, [key]: value });
+  };
+
+  const handleClickRouteToSignUp = () => {
+    navigate("/signup");
   };
 
   useEffect(() => {
@@ -59,14 +65,20 @@ function Login() {
     };
   }, [handleLogin]);
 
+  useEffect(() => {
+    if (window.ipcRenderer) {
+      window.ipcRenderer.send("window-set-login-window-size");
+    }
+  }, []);
+
   return (
-    <>
+    <div className="flex-1 items-center justify-center flex flex-col">
       <img
         src={logo}
         alt="logo"
         className="w-1/6 brightness-180 mb-5 min-w-[220px]"
       />
-      <div className="flex flex-col gap-2 w-3/12 min-w-[300px]">
+      <div className="flex flex-col gap-2 w-6/12 min-w-[300px] max-w-3/12">
         <Input
           placeholder={"ID"}
           onChange={(e) => handleChangeFormData("id", e.target.value)}
@@ -102,9 +114,22 @@ function Login() {
         >
           {isPending ? "로그인 중..." : "Login"}
         </Button>
+        <div className="flex justify-center gap-12 mt-10">
+          <span
+            className="text-sm  hover:cursor-pointer text-cyan-700 hover:text-cyan-400"
+            onClick={handleClickRouteToSignUp}
+          >
+            Sign Up
+          </span>
+          <span className="text-sm hover:cursor-pointer text-cyan-700 hover:text-cyan-400">
+            Forgot Password?
+          </span>
+        </div>
       </div>
-    </>
+
+      <div className="absolute bottom-0 right-0 w-full flex justify-end px-2 py-1">
+        <span className="text-sm text-gray-400">Grapicar v1.3.4</span>
+      </div>
+    </div>
   );
 }
-
-export default Login;

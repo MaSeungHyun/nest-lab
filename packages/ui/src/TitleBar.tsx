@@ -25,7 +25,7 @@ export default function TitleBar() {
   return (
     <div
       style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
-      className="relative top-0 left-0 right-0 h-8 bg-zinc-900 flex items-center justify-between select-none z-50 "
+      className="fixed top-0 left-0 right-0 h-8 bg-zinc-900 flex items-center justify-between select-none z-50"
     >
       <div
         style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
@@ -35,7 +35,7 @@ export default function TitleBar() {
           <Icon
             icon="ArrowLeft"
             size={16}
-            className={cn("stroke-gray-300 group-hover:stroke-white stroke-3")}
+            className="text-gray-300 group-hover:stroke-white"
           />
         </div>
         <div
@@ -45,7 +45,7 @@ export default function TitleBar() {
           <Icon
             icon="ArrowRight"
             size={16}
-            className={cn("stroke-3 stroke-gray-300 group-hover:stroke-white")}
+            className="text-gray-300  group-hover:stroke-white"
           />
         </div>
       </div>

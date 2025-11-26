@@ -1,5 +1,22 @@
-export const login = async (id: string, password: string) => {
-  const res = await fetch("http://localhost:3000/auth/login", {
+export const signin = async (id: string, password: string) => {
+  const res = await fetch("http://localhost:3000/auth/signin", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ id, password }),
+  });
+
+  console.log(res);
+  if (!res.ok) {
+    throw new Error("로그인 요청 실패");
+  }
+
+  return res.json();
+};
+
+export const signup = async (id: string, password: string) => {
+  const res = await fetch("http://localhost:3000/auth/signup", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -8,7 +25,8 @@ export const login = async (id: string, password: string) => {
   });
 
   if (!res.ok) {
-    throw new Error("로그인 요청 실패");
+    const errorData = await res.json();
+    throw new Error(errorData.message || "회원가입 요청 실패");
   }
 
   return res.json();
