@@ -58,7 +58,7 @@ export function registerWindowHandlers(windowManager: WindowManager) {
       }: Electron.BrowserWindowConstructorOptions & {
         route?: string;
       } = options || {};
-      const windowId = `window-${Date.now()}`;
+      const windowId = route;
 
       windowManager.createWindow(windowId, route, {
         width,
