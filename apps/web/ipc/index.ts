@@ -1,6 +1,6 @@
-import { BrowserWindow } from "electron";
 import { registerWindowHandlers } from "./windowHandler";
+import { WindowManager } from "../electron/windowManager";
 
-export function registerAllHandlers(getWindow: () => BrowserWindow | null) {
-  registerWindowHandlers(getWindow);
+export function registerAllHandlers(windowManager: WindowManager) {
+  registerWindowHandlers(windowManager);
 }

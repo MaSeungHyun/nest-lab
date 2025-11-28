@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import Input from "../../components/Input";
 
 import { cn } from "../../utils/style";
@@ -7,9 +7,17 @@ import Icon from "../../components/Icon";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/Button";
 import useSignInMutation from "../../hooks/useSignInMutation";
+import { userKeys } from "../../constants/queryKeys";
+import { useQueryClient } from "@tanstack/react-query";
+import { useWindow } from "../../hooks/useWindow";
 
 export default function SignIn() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const { signInMutation, isPending } = useSignInMutation();
+
+  const { setLogoutSize } = useWindow();
 
   const [form, setForm] = useState({
     id: "",
@@ -17,7 +25,6 @@ export default function SignIn() {
   });
   const [visible, setVisible] = useState(false);
   const [error, setError] = useState("");
-  const { signInMutation, isPending } = useSignInMutation();
 
   const handleLogin = useCallback(() => {
     setError("");
@@ -34,7 +41,8 @@ export default function SignIn() {
         onSuccess: (data) => {
           if (data.success) {
             // 서버에서 받은 redirectUrl로 이동
-            navigate(data.redirectUrl);
+            navigate("/dashboard");
+            queryClient.invalidateQueries({ queryKey: userKeys.all });
           } else {
             // 로그인 실패
             setError(data.message);
@@ -65,18 +73,15 @@ export default function SignIn() {
     };
   }, [handleLogin]);
 
-  useEffect(() => {
-    if (window.ipcRenderer) {
-      window.ipcRenderer.send("window-set-login-window-size");
-    }
+  useLayoutEffect(() => {
+    setLogoutSize();
   }, []);
-
   return (
     <div className="flex-1 items-center justify-center flex flex-col">
       <img
         src={logo}
         alt="logo"
-        className="w-1/6 brightness-180 mb-5 min-w-[220px]"
+        className="w-1/6 brightness-180 mb-8 min-w-[220px]"
       />
       <div className="flex flex-col gap-2 w-6/12 min-w-[300px] max-w-3/12">
         <Input

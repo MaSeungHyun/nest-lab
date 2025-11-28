@@ -71,15 +71,8 @@ export default function SignUp() {
     };
   }, [handleSignUp]);
 
-  useEffect(() => {
-    // 회원가입 페이지도 로그인과 동일한 윈도우 사이즈
-    if (window.ipcRenderer) {
-      window.ipcRenderer.send("window-set-login-window-size");
-    }
-  }, []);
-
   return (
-    <>
+    <div className="flex-1 items-center justify-center flex flex-col">
       {/* <h1 className="text-2xl font-bold mb-5">Sign Up</h1> */}
       <div className="flex flex-col gap-5 w-6/12 min-w-[300px] max-w-3/12">
         <Input
@@ -143,6 +136,6 @@ export default function SignUp() {
       <div className="absolute bottom-0 right-0 w-full flex justify-end px-2 py-1">
         <span className="text-sm text-gray-400">Grapicar v1.3.4</span>
       </div>
-    </>
+    </div>
   );
 }
