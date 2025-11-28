@@ -3,12 +3,15 @@ import { useNavigate } from "react-router-dom";
 import Icon from "../../../../components/Icon";
 import { alert } from "../../../../utils/alert";
 import useDeleteChatRoomMutation from "../../../../hooks/useDeleteChatRoomMutation";
+import { useWindow } from "../../../../hooks/useWindow";
+import { WINDOW_SIZE } from "../../../../../electron/constants/window";
 
 type RoomProps = {
   room: { uuid: string; name: string; createdAt: string };
 };
 function Room({ room }: RoomProps) {
   const navigate = useNavigate();
+  const { createWindow } = useWindow();
   const { deleteChatRoomMutation } = useDeleteChatRoomMutation();
 
   const handleDeleteClick = (e: React.MouseEvent) => {
@@ -30,7 +33,14 @@ function Room({ room }: RoomProps) {
   const handleRoomClick = () => {
     // 채팅방 클릭 시 해당 채팅방으로 이동
     // URL: /chat/:roomId (경로 파라미터 사용)
-    navigate(`/chat/${room.uuid}`);
+    // navigate(`/chat/${room.uuid}`);
+    createWindow({
+      route: `/chat/${room.uuid}`,
+      width: WINDOW_SIZE.LOGOUT.width,
+      height: WINDOW_SIZE.LOGOUT.height + 100,
+      resizable: true,
+      frame: false,
+    });
   };
 
   return (
