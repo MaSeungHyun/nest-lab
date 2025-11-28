@@ -1,12 +1,13 @@
 import { useEffect } from "react";
 import LobbyLeft from "./Left/LobbyLeft";
 import LobbyRight from "./Right/LobbyRight";
+import { useWindow } from "../../hooks/useWindow";
 
 export default function Dashboard() {
+  const { setLoginSize } = useWindow();
+
   useEffect(() => {
-    if (window.ipcRenderer) {
-      window.ipcRenderer.send("window-set-main-window-size");
-    }
+    setLoginSize();
   }, []);
 
   return (
