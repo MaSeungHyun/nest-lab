@@ -37,8 +37,12 @@ app.whenReady().then(() => {
 });
 
 app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
+  // 모든 윈도우가 실제로 닫혔는지 확인
+  const allWindows = BrowserWindow.getAllWindows();
+  if (allWindows.length === 0) {
+    if (process.platform !== "darwin") {
+      app.quit();
+    }
   }
 });
 

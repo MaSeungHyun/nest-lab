@@ -1,12 +1,13 @@
-// apps/web/electron/windowManager/index.ts
+// 📄 electron/windowManager/index.ts
 import { app, BrowserWindow } from "electron";
 import path from "path";
 import { fileURLToPath } from "node:url";
 import { WINDOW_SIZE } from "../constants/window";
+import type { WindowManagerInterface } from "./types";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export class WindowManager {
+export class WindowManager implements WindowManagerInterface {
   private windows = new Map<string, BrowserWindow>();
   private mainWindow: BrowserWindow | null = null;
   private windowPool: BrowserWindow[] = []; // 윈도우 풀
@@ -44,10 +45,10 @@ export class WindowManager {
     );
 
     const win = new BrowserWindow({
-      width: WINDOW_SIZE.LOGIN.width,
-      height: WINDOW_SIZE.LOGIN.height,
+      width: WINDOW_SIZE.LOGOUT.width,
+      height: WINDOW_SIZE.LOGOUT.height,
       show: false,
-      backgroundColor: "#1a1a1a",
+      backgroundColor: "#1e1f21",
       frame: false,
       webPreferences: {
         preload: preloadPath,
@@ -60,7 +61,8 @@ export class WindowManager {
 
     // 미리 앱 로드
     if (this.devServerUrl) {
-      win.loadURL(this.devServerUrl).catch((err) => {
+      console.log(this.devServerUrl);
+      win.loadURL(`${this.devServerUrl}preview`).catch((err) => {
         console.error("[WindowManager] Failed to preload pooled window:", err);
       });
     }
@@ -78,7 +80,7 @@ export class WindowManager {
       setTimeout(() => {
         const newWin = this.createPooledWindow();
         this.windowPool.push(newWin);
-      }, 100);
+      });
 
       return win;
     }
@@ -99,7 +101,7 @@ export class WindowManager {
       resizable: false,
       frame: false,
       show: false,
-      backgroundColor: "#1a1a1a",
+      backgroundColor: "#1e1f21",
       webPreferences: {
         preload: preloadPath,
         contextIsolation: true,
@@ -114,7 +116,7 @@ export class WindowManager {
     };
 
     this.mainWindow = new BrowserWindow({ ...defaultOptions, ...options });
-    this.windows.set("hub", this.mainWindow);
+    this.windows.set("main", this.mainWindow);
     this.loadURL(this.mainWindow, "/");
 
     // 준비되면 표시
@@ -126,7 +128,15 @@ export class WindowManager {
 
     this.mainWindow.on("closed", () => {
       console.log("[WindowManager] Main window closed");
+      this.windows.delete("main");
       this.mainWindow = null;
+
+      // 메인 윈도우가 닫혀도 다른 윈도우가 있으면 앱 유지
+      if (this.windows.size > 0) {
+        console.log(
+          "[WindowManager] Other windows still open, keeping app alive"
+        );
+      }
     });
 
     return this.mainWindow;
@@ -171,7 +181,7 @@ export class WindowManager {
         resizable: true,
         frame: false,
         show: false,
-        backgroundColor: "#1a1a1a",
+        backgroundColor: "#1e1f21",
         webPreferences: {
           preload: preloadPath,
           contextIsolation: true,
@@ -181,6 +191,7 @@ export class WindowManager {
       };
 
       win = new BrowserWindow({ ...defaultOptions, ...options });
+
       this.loadURL(win, route);
     } else {
       // 풀에서 가져온 윈도우는 이미 로드되어 있으므로 라우트만 변경
@@ -224,33 +235,23 @@ export class WindowManager {
     return win;
   }
 
-  // 윈도우 라우트 변경 (페이지 새로고침 없이)
+  // 윈도우 라우트 변경 (IPC를 통한 React Router 제어)
   private navigateWindow(window: BrowserWindow, route: string) {
-    if (this.devServerUrl) {
-      // 개발 모드: 전체 URL 변경
-      const currentUrl = window.webContents.getURL();
-      const newUrl = `${this.devServerUrl}${route}`;
+    // XSS 방지를 위해 route 검증
+    const safeRoute = route.startsWith("/") ? route : `/${route}`;
 
-      if (currentUrl !== newUrl) {
-        window.webContents
-          .executeJavaScript(
-            `
-          window.history.pushState(null, '', '${route}');
-          window.dispatchEvent(new PopStateEvent('popstate'));
-        `
-          )
-          .catch((err) => {
-            console.error("[WindowManager] Failed to navigate:", err);
-            // fallback: 전체 리로드
-            window.loadURL(newUrl);
-          });
+    console.log("[WindowManager] Navigating to route:", safeRoute);
+
+    // IPC로 React Router에 직접 전달 (가장 안전하고 React Router와 완벽 통합)
+    window.webContents.send("navigate", safeRoute);
+
+    // Fallback: 만약 React가 아직 로드되지 않았다면 기존 방식 사용
+    const currentUrl = window.webContents.getURL();
+    if (!currentUrl || currentUrl === "about:blank") {
+      console.log("[WindowManager] React not loaded yet, using fallback");
+      if (this.devServerUrl) {
+        window.loadURL(`${this.devServerUrl}${safeRoute}`);
       }
-    } else {
-      // 프로덕션: 라우트만 변경
-      window.webContents.executeJavaScript(`
-        window.history.pushState(null, '', '${route}');
-        window.dispatchEvent(new PopStateEvent('popstate'));
-      `);
     }
   }
 
@@ -288,13 +289,13 @@ export class WindowManager {
     }
   }
 
-  findWindowByWebContentsId(webContentsId: number): BrowserWindow | null {
-    if (this.mainWindow?.webContents.id === webContentsId) {
+  findWindowById(id: number): BrowserWindow | null {
+    if (this.mainWindow?.webContents.id === id) {
       return this.mainWindow;
     }
 
     for (const win of this.windows.values()) {
-      if (win.webContents.id === webContentsId) {
+      if (win.webContents.id === id) {
         return win;
       }
     }
@@ -318,7 +319,11 @@ export class WindowManager {
     const win = this.windows.get(id);
 
     win?.close();
-    if (this.windows.size === 0) {
+
+    // 메인 윈도우가 아닌 경우에만 체크
+    // 메인 윈도우가 닫혀도 다른 윈도우가 있으면 앱을 유지
+    if (id !== "main" && this.windows.size === 0 && !this.mainWindow) {
+      // 모든 윈도우가 닫혔고 메인 윈도우도 없으면 종료
       app.quit();
     }
   }
@@ -336,3 +341,11 @@ export class WindowManager {
     this.windowPool = [];
   }
 }
+
+// 타입 재export
+export type {
+  WindowManagerInterface,
+  WindowCreationOptions,
+  WindowState,
+  WindowPoolConfig,
+} from "./types";

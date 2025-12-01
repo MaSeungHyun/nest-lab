@@ -14,12 +14,12 @@ export const EVENT_CHANNEL_CONFIG = {
 export function registerWindowHandlers(windowManager: WindowManager) {
   console.log(windowManager);
   ipcMain.on(EVENT_CHANNEL_CONFIG.MINIMIZE, (event: Electron.IpcMainEvent) => {
-    const win = windowManager.findWindowByWebContentsId(event.sender.id);
+    const win = windowManager.findWindowById(event.sender.id);
     win?.minimize();
   });
 
   ipcMain.on(EVENT_CHANNEL_CONFIG.MAXIMIZE, (event: Electron.IpcMainEvent) => {
-    const win = windowManager.findWindowByWebContentsId(event.sender.id);
+    const win = windowManager.findWindowById(event.sender.id);
     if (win?.isMaximized()) {
       win?.unmaximize();
     } else {
@@ -28,19 +28,19 @@ export function registerWindowHandlers(windowManager: WindowManager) {
   });
 
   ipcMain.on(EVENT_CHANNEL_CONFIG.CLOSE, (event: Electron.IpcMainEvent) => {
-    const win = windowManager.findWindowByWebContentsId(event.sender.id);
+    const win = windowManager.findWindowById(event.sender.id);
     win?.close();
   });
 
   ipcMain.on(EVENT_CHANNEL_CONFIG.LOGIN, (event: Electron.IpcMainEvent) => {
-    const win = windowManager.findWindowByWebContentsId(event.sender.id);
+    const win = windowManager.findWindowById(event.sender.id);
     win?.setSize(WINDOW_SIZE.LOGIN.width, WINDOW_SIZE.LOGIN.height);
     win?.setResizable(true);
     win?.center();
   });
 
   ipcMain.on(EVENT_CHANNEL_CONFIG.LOGOUT, (event: Electron.IpcMainEvent) => {
-    const win = windowManager.findWindowByWebContentsId(event.sender.id);
+    const win = windowManager.findWindowById(event.sender.id);
     win?.setSize(WINDOW_SIZE.LOGOUT.width, WINDOW_SIZE.LOGOUT.height);
     win?.setResizable(false);
     win?.center();
