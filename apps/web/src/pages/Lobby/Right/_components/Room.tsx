@@ -5,6 +5,7 @@ import { alert } from "../../../../utils/alert";
 import useDeleteChatRoomMutation from "../../../../hooks/useDeleteChatRoomMutation";
 import { useWindow } from "../../../../hooks/useWindow";
 import { WINDOW_SIZE } from "../../../../../electron/constants/window";
+import { isElectron } from "../../../../utils/environment";
 
 type RoomProps = {
   room: { uuid: string; name: string; createdAt: string };
@@ -33,18 +34,19 @@ function Room({ room }: RoomProps) {
   const handleRoomClick = () => {
     // 채팅방 클릭 시 해당 채팅방으로 이동
     // URL: /chat/:roomId (경로 파라미터 사용)
-    // navigate(`/chat/${room.uuid}`);
-    createWindow({
-      route: `/chat/${room.uuid}`,
-      width: WINDOW_SIZE.LOGOUT.width,
-      height: WINDOW_SIZE.LOGOUT.height + 100,
-      resizable: true,
-      frame: false,
-    });
+    isElectron()
+      ? createWindow({
+          route: `/chat/${room.uuid}`,
+          width: WINDOW_SIZE.LOGOUT.width,
+          height: WINDOW_SIZE.LOGOUT.height + 100,
+          resizable: true,
+          frame: false,
+        })
+      : navigate(`/chat/${room.uuid}`);
   };
 
   return (
-    <div className="relative min-w-[220px]">
+    <div className="relative min-w-[220px] overflow-hidden">
       <div
         className="absolute right-2 top-2 group hover:cursor-pointer z-10"
         onClick={handleDeleteClick}
