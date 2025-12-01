@@ -29,4 +29,9 @@ interface Window {
     send: (channel: string, ...args: any[]) => void;
     invoke: (channel: string, ...args: any[]) => Promise<any>;
   };
+
+  electronAPI?: {
+    onNavigate: (callback: (route: string) => void) => void;
+    offNavigate: () => void;
+  };
 }
