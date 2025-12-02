@@ -29,4 +29,32 @@ export default defineConfig({
           : {},
     }),
   ],
+  optimizeDeps: {
+    include: [
+      "react",
+      "react-dom",
+      "react/jsx-runtime",
+      "three",
+      "@react-three/fiber",
+      "@react-three/drei",
+    ],
+    exclude: ["electron"],
+    esbuildOptions: {
+      define: {
+        global: "globalThis",
+      },
+    },
+  },
+  resolve: {
+    alias: {
+      three: path.resolve(__dirname, "node_modules/three"),
+    },
+    dedupe: ["react", "react-dom", "three"],
+  },
+  build: {
+    commonjsOptions: {
+      include: [/node_modules/],
+      transformMixedEsModules: true,
+    },
+  },
 });

@@ -45,8 +45,8 @@ export class WindowManager implements WindowManagerInterface {
     );
 
     const win = new BrowserWindow({
-      width: WINDOW_SIZE.LOGOUT.width,
-      height: WINDOW_SIZE.LOGOUT.height,
+      width: WINDOW_SIZE.LOGIN.width,
+      height: WINDOW_SIZE.LOGIN.height,
       show: false,
       backgroundColor: "#1e1f21",
       frame: false,

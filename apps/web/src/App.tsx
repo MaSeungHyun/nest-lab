@@ -15,6 +15,11 @@ import ChatRoom from "./pages/ChatRoom";
 import { AlertProvider } from "./context/AlertProvider";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Preview from "./pages/Preview/Preview";
+import Editor from "./pages/Editor/index";
+import { ContextProvider } from "./context/ContextProvider";
+import { ProgressProvider } from "./context/ProgressProvider";
+import { Toaster } from "sonner";
+import { isElectron } from "./utils/environment";
 
 const queryClient = new QueryClient();
 
@@ -47,9 +52,11 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AlertProvider>
         <BrowserRouter>
+          <ProgressProvider />
+          <Toaster />
           <ElectronRouterListener />
           <div className="max-h-screen max-w-screen min-h-screen min-w-screen h-screen w-screen flex flex-col overflow-hidden">
-            <TitleBar />
+            {isElectron() && <TitleBar />}
             <Routes>
               <Route path="/" element={<Navigate to="/login" replace />} />
               <Route path="/login" element={<SignIn />} />
@@ -58,6 +65,14 @@ function App() {
               {/* 채팅방 페이지 - 경로 파라미터 사용 */}
               <Route path="/chat/:roomId" element={<ChatRoom />} />
               <Route path="/preview" element={<Preview />} />
+              <Route
+                path="/editor/:roomId"
+                element={
+                  <ContextProvider>
+                    <Editor />
+                  </ContextProvider>
+                }
+              />
             </Routes>
           </div>
         </BrowserRouter>

@@ -36,13 +36,14 @@ function Room({ room }: RoomProps) {
     // URL: /chat/:roomId (경로 파라미터 사용)
     isElectron()
       ? createWindow({
-          route: `/chat/${room.uuid}`,
-          width: WINDOW_SIZE.LOGOUT.width,
-          height: WINDOW_SIZE.LOGOUT.height + 100,
+          route: `/editor/${room.uuid}`,
+          width: WINDOW_SIZE.LOGIN.width,
+          height: WINDOW_SIZE.LOGIN.height,
           resizable: true,
+          center: true,
           frame: false,
         })
-      : navigate(`/chat/${room.uuid}`);
+      : navigate(`/editor/${room.uuid}`);
   };
 
   return (

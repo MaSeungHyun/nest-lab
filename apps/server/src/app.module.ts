@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { User } from './auth/entities/user.entity';
 import { Room } from './rooms/entities/rooms.entity';
+import { RoomUser } from './chat/entities/room-user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
@@ -20,7 +21,7 @@ import { ChatModule } from './chat/chat.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [User, Room],
+      entities: [User, Room, RoomUser],
       synchronize: true, // 개발환경에서만 true
     }),
     AuthModule,
