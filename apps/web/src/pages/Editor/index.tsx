@@ -12,7 +12,7 @@ export default function Editor({ className }: { className?: string }) {
   const context = useEditor();
 
   useEffect(() => {
-    setTitle("Editor");
+    setTitle("Grapicar Studio");
     if (sceneViewRef.current) {
       console.time("SceneView Render");
       context.didMount(sceneViewRef.current);
