@@ -12,10 +12,71 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #1e1f21 ;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+
+
+@theme {
+  --font-sans: "Pretendard Variable";  
+
+  --color-background-db-primary: #444546;
+  --color-background-db-secondary: #272829;
+  --color-background-db-third: #414142;
+
+  --color-black-100: #3f3f3f;
+  --color-black-200: #3e3e3e;
+  --color-black-300: #3c3c3c;
+  --color-black-400: #383838;
+  --color-black-500: #333333;
+  --color-black-600: #282828;
+  --color-black-700: #252525;
+  --color-black-800: #241f1a;
+  --color-black-900: #121212;
+
+  --color-gray-100: #f0f0f0;
+  --color-gray-200: #d3d3d3;
+  --color-gray-300: #9e9e9e;
+  --color-gray-400: #919191;
+  --color-gray-500: #707070;
+  --color-gray-600: #606060;
+  --color-gray-700: #505050;
+  --color-gray-800: #404040;
+  --color-gray-900: #303030;
+
+  --color-cyan-100: #00e1e9;
+  --color-cyan-200: #00ced6;
+  --color-cyan-300: #00a7ae;
+  --color-cyan-400: #00696d;
+  --color-cyan-500: #005255;
+  --color-cyan-600: #32555d;
+  --color-cyan-700: #003638;
+  --color-cyan-800: #002931;
+
+  --shadow-menu-primary: 0 0 3px #005255;
+
+  --color-orange-500: #ff5f00;
+  --color-orange-700: #9e3b00;
+
+  --color-yellow-500: #ffcc00;
+
+  --color-background-db-header: #353535;
+  --color-background-db-header-hover: #454545;
+  --color-background-db-select: #19474e;
+
+  --color-progress-start: #005255;
+  --color-progress-end: #00ced6;
+
+  --color-text-primary: #b1b1b1;
+  --color-text-secondary: #acacac;
+
+  --color-border-primary: #5d5e5f;
+  --color-border-button: #2f3031;
+
+  --animate-slideUpAndFade: slideUpAndFade 0.2s ease-in-out;
+}
+

@@ -11,7 +11,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         className={cn(
-          "bg-black text-gray-100 h-fit min-h-8 w-fit min-w-24 rounded-md border px-6 py-1",
+          "bg-black text-gray-100  w-fit min-w-24 rounded-md border px-3 py-1 text-sm",
           !props.disabled &&
             "hover:bg-black-500 border-cyan-300 hover:cursor-pointer hover:border-cyan-200",
           props.disabled &&

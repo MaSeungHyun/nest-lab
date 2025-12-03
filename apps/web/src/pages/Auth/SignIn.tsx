@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useState } from "react";
-import Input from "../../components/Input";
 
 import { cn } from "../../utils/style";
-import logo from "../../assets/logo.png";
+import logo from "../../assets/logo/logo.png";
 import Icon from "../../components/Icon";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/Button";
@@ -10,6 +9,8 @@ import useSignInMutation from "../../hooks/useSignInMutation";
 import { userKeys } from "../../constants/queryKeys";
 import { useQueryClient } from "@tanstack/react-query";
 import { useWindow } from "../../hooks/useWindow";
+import InputWithLabel from "./_components/InputWithLabel";
+import Checkbox from "../../components/Checkbox";
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -81,28 +82,32 @@ export default function SignIn() {
       <img
         src={logo}
         alt="logo"
-        className="w-1/6 brightness-180 mb-8 min-w-[220px]"
+        className="w-1/6 brightness-100 min-w-[220px]"
       />
+      <div className="mb-8 "></div>
       <div className="flex flex-col gap-2 w-6/12 min-w-[300px] max-w-3/12">
-        <Input
-          placeholder={"ID"}
+        <InputWithLabel
+          autoFocus
+          label="Email Address"
           onChange={(e) => handleChangeFormData("id", e.target.value)}
           value={form.id}
           className="mb-2"
         />
-        <div className="relative">
-          <Input
-            placeholder={"Password"}
-            className={"w-full"}
-            type={visible ? "text" : "password"}
-            onChange={(e) => handleChangeFormData("password", e.target.value)}
-            value={form.password}
-          />
+        <InputWithLabel
+          label="Password"
+          type={visible ? "text" : "password"}
+          onChange={(e) => handleChangeFormData("password", e.target.value)}
+          value={form.password}
+        >
           <Icon
             icon={visible ? "EyeOff" : "Eye"}
             className="absolute right-2 top-1/2 -translate-y-1/2"
             onClick={() => setVisible(!visible)}
           />
+        </InputWithLabel>
+        <div className="flex items-center mt-2">
+          <Checkbox />
+          <span className="text-xs text-gray-300">Remember me</span>
         </div>
         <p
           className={cn(
@@ -113,7 +118,7 @@ export default function SignIn() {
           {error ? error : "."}
         </p>
         <Button
-          className="mt-5 w-full"
+          className="mt-2 w-full"
           onClick={handleLogin}
           disabled={isPending}
         >
@@ -131,9 +136,8 @@ export default function SignIn() {
           </span>
         </div>
       </div>
-
       <div className="absolute bottom-0 right-0 w-full flex justify-end px-2 py-1">
-        <span className="text-sm text-gray-400">Grapicar v1.3.4</span>
+        <span className="text-sm text-gray-400">Grapicar v1.3.7</span>
       </div>
     </div>
   );

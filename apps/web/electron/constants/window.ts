@@ -1,10 +1,10 @@
 export const WINDOW_SIZE = {
   LOGIN: {
-    width: 1280,
-    height: 720,
+    width: 1480,
+    height: 920,
   },
   LOGOUT: {
-    width: 420,
-    height: 620,
+    width: 1480,
+    height: 920,
   },
 };

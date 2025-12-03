@@ -1,19 +1,21 @@
-import React, { useCallback, useEffect, useState } from "react";
-import Input from "../../components/Input";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "../../components/Button";
 import useSignUpMutation from "../../hooks/useSignUpMutation";
 import { cn } from "../../utils/style";
-
 import Icon from "../../components/Icon";
 import { useNavigate } from "react-router-dom";
-import { SignUpResponseDto } from "../../../../../types/common/auth.dto";
 import { alert } from "../../utils/alert";
+import InputWithLabel from "./_components/InputWithLabel";
+import { SignUpResponseDto } from "../../../../types/common/auth.dto";
+import Checkbox from "../../components/Checkbox";
 
 export default function SignUp() {
   const [form, setForm] = useState({
-    id: "",
+    email: "",
     password: "",
     confirmPassword: "",
+    name: "",
+    companyId: "",
   });
   const [visible, setVisible] = useState({
     password: false,
@@ -26,13 +28,26 @@ export default function SignUp() {
 
   const handleSignUp = useCallback(() => {
     setError("");
-    if (!form.id || !form.password || !form.confirmPassword) {
-      setError("아이디와 비밀번호를 입력해주세요.");
+
+    if (
+      !form.email ||
+      !form.password ||
+      !form.confirmPassword ||
+      !form.name ||
+      !form.companyId
+    ) {
+      setError("모든 필드를 입력해주세요.");
+      return;
+    }
+    if (form.password !== form.confirmPassword) {
+      setError("비밀번호가 일치하지 않습니다.");
       return;
     }
     signUpMutation(
       {
-        id: form.id,
+        email: form.email,
+        name: form.name,
+        companyId: form.companyId,
         password: form.password,
         passwordConfirm: form.confirmPassword,
       },
@@ -73,21 +88,38 @@ export default function SignUp() {
 
   return (
     <div className="flex-1 items-center justify-center flex flex-col">
-      {/* <h1 className="text-2xl font-bold mb-5">Sign Up</h1> */}
-      <div className="flex flex-col gap-5 w-6/12 min-w-[300px] max-w-3/12">
-        <Input
-          placeholder={"ID"}
-          onChange={(e) => handleChangeFormData("id", e.target.value)}
-          value={form.id}
+      <div
+        className="absolute left-2 top-2 group hover:bg-gray-700 p-1 rounded-md cursor-pointer"
+        onClick={() => navigate("/login")}
+      >
+        <Icon
+          icon="ArrowLeft"
+          size={20}
+          className="text-gray-300 group-hover:text-white"
         />
-        <div className="relative">
-          <Input
-            placeholder={"Password"}
-            className={"w-full"}
-            type={visible.password ? "text" : "password"}
-            onChange={(e) => handleChangeFormData("password", e.target.value)}
-            value={form.password}
-          />
+      </div>
+      <div className="flex flex-col gap-3 w-6/12 min-w-[300px] max-w-4/12">
+        <InputWithLabel
+          label="Company ID"
+          name="companyId"
+          onChange={(e) => handleChangeFormData("companyId", e.target.value)}
+          value={form.companyId}
+        />
+
+        <InputWithLabel
+          label="Email Address"
+          name="email"
+          autoFocus
+          onChange={(e) => handleChangeFormData("email", e.target.value)}
+          value={form.email}
+        />
+        <InputWithLabel
+          label="Password"
+          name="password"
+          type={visible.password ? "text" : "password"}
+          onChange={(e) => handleChangeFormData("password", e.target.value)}
+          value={form.password}
+        >
           <Icon
             icon={visible.password ? "EyeOff" : "Eye"}
             className="absolute right-2 top-1/2 -translate-y-1/2"
@@ -98,17 +130,16 @@ export default function SignUp() {
               })
             }
           />
-        </div>
-        <div className="relative">
-          <Input
-            placeholder={"Confirm Password"}
-            className={"w-full"}
-            type={visible.confirmPassword ? "text" : "password"}
-            onChange={(e) =>
-              handleChangeFormData("confirmPassword", e.target.value)
-            }
-            value={form.confirmPassword}
-          />
+        </InputWithLabel>
+        <InputWithLabel
+          label="Confirm Password"
+          name="confirmPassword"
+          type={visible.confirmPassword ? "text" : "password"}
+          onChange={(e) =>
+            handleChangeFormData("confirmPassword", e.target.value)
+          }
+          value={form.confirmPassword}
+        >
           <Icon
             icon={visible.confirmPassword ? "EyeOff" : "Eye"}
             className="absolute right-2 top-1/2 -translate-y-1/2"
@@ -119,7 +150,13 @@ export default function SignUp() {
               })
             }
           />
-        </div>
+        </InputWithLabel>
+        <InputWithLabel
+          label="Name"
+          name="name"
+          onChange={(e) => handleChangeFormData("name", e.target.value)}
+          value={form.name}
+        />
         <p
           className={cn(
             "text-red-400 text-sm ",
@@ -128,7 +165,11 @@ export default function SignUp() {
         >
           {error ? error : "."}
         </p>
-        <Button className="w-full" onClick={handleSignUp} disabled={isPending}>
+        <Button
+          className="w-full mt-6"
+          onClick={handleSignUp}
+          disabled={isPending}
+        >
           {isPending ? "회원가입 중..." : "Sign Up"}
         </Button>
       </div>

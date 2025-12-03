@@ -1,9 +1,10 @@
 import { cn } from "../utils/style";
 import { icons, type LucideProps } from "lucide-react";
 import React from "react";
+import { IconTypes } from "../types/icon";
 
 type TransformIconProps = LucideProps & {
-  icon: keyof typeof icons;
+  icon: IconTypes;
   className?: string;
   fill?: string;
   size?: number;
@@ -17,7 +18,7 @@ export default function Icon({
   onClick,
   ...props
 }: TransformIconProps): React.ReactNode {
-  const Icon = icons[icon as keyof typeof icons];
+  const Icon = icons[icon];
 
   return (
     <Icon className={cn(className)} size={size} onClick={onClick} {...props} />

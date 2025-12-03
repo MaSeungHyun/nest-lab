@@ -6,13 +6,15 @@ type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
 };
 export default function Input({ className, ...props }: InputProps) {
   return (
-    <input
-      className={cn(
-        "border border-gray-400 px-2 bg-black text-white focus:border-cyan-300 outline-none text-sm h-8 rounded-xs",
-        "placeholder:text-gray-400",
-        className
-      )}
-      {...props}
-    />
+    <div>
+      <input
+        className={cn(
+          "border border-gray-400 px-2 bg-black text-white focus:border-cyan-300 outline-none text-sm h-8 rounded-xs",
+          "placeholder:text-gray-400",
+          className
+        )}
+        {...props}
+      />
+    </div>
   );
 }

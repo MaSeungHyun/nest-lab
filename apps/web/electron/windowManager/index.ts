@@ -262,7 +262,8 @@ export class WindowManager implements WindowManagerInterface {
     });
 
     if (this.devServerUrl) {
-      const url = `${this.devServerUrl}${route}`;
+      const url = `${this.devServerUrl}${route.charAt(0) === "/" ? route.slice(1) : route}`;
+
       console.log("[WindowManager] Loading dev URL:", url);
 
       window.loadURL(url).catch((err) => {

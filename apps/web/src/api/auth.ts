@@ -1,11 +1,14 @@
 export const signin = async (id: string, password: string) => {
-  const res = await fetch("http://localhost:3000/auth/signin", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ id, password }),
-  });
+  const res = await fetch(
+    `${process.env.GRAPICAR_SERVER_API_URL}/auth/signin`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id, password }),
+    }
+  );
 
   console.log(res);
   if (!res.ok) {
@@ -16,13 +19,16 @@ export const signin = async (id: string, password: string) => {
 };
 
 export const signup = async (id: string, password: string) => {
-  const res = await fetch("http://localhost:3000/auth/signup", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ id, password }),
-  });
+  const res = await fetch(
+    `${process.env.GRAPICAR_SERVER_API_URL}/auth/signup`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id, password }),
+    }
+  );
 
   if (!res.ok) {
     const errorData = await res.json();
